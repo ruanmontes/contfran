@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ContFran — Contabilidade que impulsiona negócios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue: #3B5BF5;
+      --blue-dark: #2644d4;
+      --blue-light: #5b78ff;
+      --teal: #4ECBA6;
+      --dark: #2b2d35;
+      --darker: #1e2028;
+      --gray: #f4f6fb;
+      --text: #2b2d35;
+      --text-muted: #6b7280;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      height: 72px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(59,91,245,0.08);
+      transition: box-shadow .3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 24px rgba(59,91,245,0.10); }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo svg { height: 38px; }
+    .nav-logo-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.35rem; font-weight: 700; color: var(--teal);
+    }
+    .nav-logo-text span { color: var(--blue); font-weight: 800; }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: .93rem; font-weight: 500; color: var(--text-muted);
+      text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-cta {
+      background: var(--blue); color: #fff !important;
+      padding: 10px 24px; border-radius: 8px;
+      font-weight: 600 !important; transition: background .2s, transform .15s !important;
+    }
+    .nav-cta:hover { background: var(--blue-dark) !important; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background: var(--darker);
+      display: flex; align-items: center;
+      padding: 100px 5vw 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* animated geometric bg */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 70% 40%, rgba(59,91,245,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(78,203,166,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .grid-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+      max-width: 1200px; margin: 0 auto; width: 100%;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(78,203,166,0.12);
+      border: 1px solid rgba(78,203,166,0.3);
+      color: var(--teal);
+      font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 24px;
+    }
+    .hero-tag::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal); display: block;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ opacity:1; transform:scale(1); }
+      50%{ opacity:.4; transform:scale(.7); }
+    }
+
+    .hero-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      font-weight: 800; line-height: 1.12;
+      color: #fff; margin-bottom: 22px;
+    }
+    .hero-title .accent { color: var(--blue-light); }
+
+    .hero-desc {
+      font-size: 1.05rem; font-weight: 300; line-height: 1.75;
+      color: rgba(255,255,255,0.65); margin-bottom: 36px; max-width: 480px;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue); color: #fff;
+      padding: 15px 32px; border-radius: 10px;
+      font-family: 'Sora', sans-serif; font-weight: 700; font-size: .95rem;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(59,91,245,0.35);
+    }
+    .btn-primary:hover { background: var(--blue-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,91,245,0.45); }
+    .btn-ghost {
+      color: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.2);
+      padding: 15px 28px; border-radius: 10px;
+      font-family: 'Sora', sans-serif; font-weight: 600; font-size: .95rem;
+      text-decoration: none; transition: border-color .2s, color .2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
+
+    /* hero logo card */
+    .hero-visual {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 60px 50px;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      backdrop-filter: blur(8px);
+      position: relative;
+      animation: floatCard 5s ease-in-out infinite;
+    }
+    @keyframes floatCard {
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-12px); }
+    }
+    .logo-card::after {
+      content: '';
+      position: absolute; inset: -1px; border-radius: 24px;
+      background: linear-gradient(135deg, rgba(59,91,245,0.3), transparent 60%, rgba(78,203,166,0.2));
+      pointer-events: none; z-index: -1;
+    }
+
+    /* SVG logo replica */
+    .logo-svg { width: 180px; }
+
+    .logo-tagline {
+      font-family: 'Sora', sans-serif;
+      font-size: .85rem; font-weight: 400;
+      color: rgba(255,255,255,0.5);
+      text-align: center; letter-spacing: .04em;
+    }
+    .logo-tagline strong { color: var(--teal); font-weight: 700; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      background: var(--blue);
+      padding: 28px 5vw;
+    }
+    .stats-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 16px; text-align: center;
+    }
+    .stat-val {
+      font-family: 'Sora', sans-serif;
+      font-size: 2rem; font-weight: 800; color: #fff;
+    }
+    .stat-label { font-size: .82rem; color: rgba(255,255,255,0.72); font-weight: 400; margin-top: 2px; }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 96px 5vw; }
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800;
+      color: var(--text); line-height: 1.2; margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 1rem; font-weight: 300; line-height: 1.75;
+      color: var(--text-muted); max-width: 540px;
+    }
+
+    /* ── SERVICES ── */
+    #services { background: var(--gray); }
+    .services-grid {
+      max-width: 1200px; margin: 48px auto 0;
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 24px;
+    }
+    .service-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 36px 32px;
+      border: 1px solid rgba(59,91,245,0.07);
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: var(--blue);
+      transform: scaleY(0); transform-origin: bottom;
+      transition: transform .3s ease;
+    }
+    .service-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(59,91,245,0.12); border-color: rgba(59,91,245,0.2); }
+    .service-card:hover::before { transform: scaleY(1); }
+
+    .service-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(59,91,245,0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    .service-card h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.08rem; font-weight: 700; margin-bottom: 10px;
+    }
+    .service-card p { font-size: .9rem; line-height: 1.7; color: var(--text-muted); }
+
+    /* ── WHY US ── */
+    #why { background: var(--darker); }
+    #why .section-label { color: var(--teal); }
+    #why .section-title { color: #fff; }
+    #why .section-desc { color: rgba(255,255,255,0.55); }
+
+    .why-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
+    }
+    .why-list { margin-top: 40px; display: flex; flex-direction: column; gap: 24px; }
+    .why-item {
+      display: flex; gap: 16px;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: border-color .2s, background .2s;
+    }
+    .why-item:hover { border-color: rgba(59,91,245,0.35); background: rgba(59,91,245,0.05); }
+    .why-num {
+      font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800;
+      color: var(--blue-light); min-width: 40px; line-height: 1;
+    }
+    .why-item h4 { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .why-item p { font-size: .88rem; line-height: 1.65; color: rgba(255,255,255,0.5); }
+
+    .why-visual {
+      position: relative;
+    }
+    .dashboard-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(8px);
+    }
+    .db-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .db-title { font-family: 'Sora', sans-serif; font-size: .9rem; font-weight: 700; color: #fff; }
+    .db-badge { background: rgba(78,203,166,0.15); color: var(--teal); font-size: .75rem; font-weight: 600; padding: 4px 10px; border-radius: 100px; }
+    .db-bars { display: flex; gap: 10px; align-items: flex-end; height: 90px; }
+    .db-bar {
+      flex: 1; background: rgba(59,91,245,0.25); border-radius: 6px 6px 0 0;
+      position: relative; overflow: hidden;
+      animation: growBar 1.5s ease forwards;
+      transform-origin: bottom;
+    }
+    .db-bar:nth-child(2){ background: rgba(59,91,245,0.45); animation-delay:.1s; }
+    .db-bar:nth-child(3){ background: rgba(59,91,245,0.6); animation-delay:.2s; }
+    .db-bar:nth-child(4){ background: var(--blue); animation-delay:.3s; }
+    .db-bar:nth-child(5){ background: var(--blue-light); animation-delay:.4s; }
+    .db-bar:nth-child(6){ background: var(--teal); animation-delay:.5s; }
+    @keyframes growBar { from{ transform:scaleY(0); } to{ transform:scaleY(1); } }
+
+    .db-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+    .kpi {
+      background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .kpi-val { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--teal); }
+    .kpi-label { font-size: .75rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+    /* ── INFO BLOCKS ── */
+    #info { background: var(--white); }
+    .info-tabs { display: flex; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 10px 22px; border-radius: 100px;
+      border: 1px solid rgba(59,91,245,0.2);
+      background: transparent; color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 500;
+      cursor: pointer; transition: all .2s;
+    }
+    .tab-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 600; }
+    .tab-btn:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+
+    .info-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 20px;
+    }
+    .info-card {
+      border-radius: 14px; padding: 28px;
+      border: 1px solid rgba(59,91,245,0.1);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .info-card:hover { border-color: rgba(59,91,245,0.25); box-shadow: 0 8px 32px rgba(59,91,245,0.08); }
+    .info-card h4 {
+      font-family: 'Sora', sans-serif; font-size: .97rem; font-weight: 700;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .info-card h4 span { font-size: 1.2rem; }
+    .info-card p { font-size: .87rem; line-height: 1.7; color: var(--text-muted); }
+    .info-card .info-val {
+      font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 800;
+      color: var(--blue); margin: 10px 0 6px;
+    }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--gray); }
+    .test-grid {
+      max-width: 1200px; margin: 48px auto 0;
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 24px;
+    }
+    .test-card {
+      background: var(--white);
+      border-radius: 16px; padding: 32px;
+      border: 1px solid rgba(59,91,245,0.07);
+      position: relative;
+    }
+    .test-card::before {
+      content: '"'; font-family: 'Sora', sans-serif;
+      font-size: 5rem; font-weight: 800; line-height: 1;
+      color: var(--blue); opacity: .12;
+      position: absolute; top: 12px; left: 20px;
+    }
+    .test-text { font-size: .9rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 20px; position: relative; z-index: 1; }
+    .test-author { display: flex; align-items: center; gap: 12px; }
+    .test-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--blue); display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-weight: 800; color: #fff; font-size: .9rem;
+    }
+    .test-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: .9rem; }
+    .test-role { font-size: .78rem; color: var(--text-muted); }
+    .stars { color: #fbbf24; font-size: .85rem; margin-bottom: 14px; }
+
+    /* ── CTA ── */
+    #cta {
+      background: var(--blue);
+      text-align: center; padding: 96px 5vw;
+      position: relative; overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 70%);
+    }
+    #cta h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; color: #fff; margin-bottom: 16px; position: relative; z-index: 1;
+    }
+    #cta p { font-size: 1rem; color: rgba(255,255,255,0.75); margin-bottom: 36px; position: relative; z-index: 1; }
+    .btn-white {
+      background: #fff; color: var(--blue);
+      padding: 16px 36px; border-radius: 10px;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: relative; z-index: 1;
+    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(0,0,0,0.25); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--darker); padding: 56px 5vw 32px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+    }
+    .footer-brand p { font-size: .88rem; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 12px; max-width: 280px; }
+    .footer-logo-text { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--teal); }
+    .footer-logo-text span { color: var(--blue-light); font-weight: 800; }
+    .footer-col h5 { font-family: 'Sora', sans-serif; font-size: .85rem; font-weight: 700; color: #fff; margin-bottom: 16px; letter-spacing: .04em; text-transform: uppercase; }
+    .footer-col a { display: block; font-size: .87rem; color: rgba(255,255,255,0.45); text-decoration: none; margin-bottom: 10px; transition: color .2s; }
+    .footer-col a:hover { color: var(--teal); }
+    .footer-bottom {
+      max-width: 1200px; margin: 40px auto 0;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .8rem; color: rgba(255,255,255,0.3);
+    }
+    .footer-bottom a { color: var(--teal); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-inner, .why-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* scroll reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <!-- ✏️ TROQUE O CAMINHO DA LOGO AQUI -->
+    <img src="logo.png" style="height:44px; width:auto;" alt="ContFran Logo"/>
+  </a>
+  <div class="nav-links">
+    <a href="#services">Serviços</a>
+    <a href="#why">Por que nós</a>
+    <a href="#info">Informações</a>
+    <a href="#testimonials">Clientes</a>
+    <a href="#cta" class="nav-cta">Fale Conosco</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="grid-lines"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Escritório de Contabilidade</div>
+      <h1 class="hero-title">
+        Contabilidade que<br/>
+        <span class="accent">impulsiona</span><br/>
+        negócios
+      </h1>
+      <p class="hero-desc">
+        A ContFran oferece soluções contábeis completas para empresas de todos os portes. 
+        Expertise, tecnologia e atendimento personalizado para o crescimento do seu negócio.
+      </p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn-primary">
+          Começar agora
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#services" class="btn-ghost">Nossos serviços</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="logo-card">
+        <!-- ✏️ TROQUE O CAMINHO DA LOGO AQUI -->
+        <img src="logo.png" style="width:140px;" alt="ContFran Logo"/>
+        <div style="font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:700;color:#4ECBA6;letter-spacing:-.02em;">
+          Cont<span style="color:#5b78ff;font-weight:800;">Fran</span>
+        </div>
+        <div class="logo-tagline">Contabilidade que<br/><strong>impulsiona negócios</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="reveal">
+      <div class="stat-val">+500</div>
+      <div class="stat-label">Clientes atendidos</div>
+    </div>
+    <div class="reveal">
+      <div class="stat-val">15+</div>
+      <div class="stat-label">Anos de experiência</div>
+    </div>
+    <div class="reveal">
+      <div class="stat-val">98%</div>
+      <div class="stat-label">Satisfação dos clientes</div>
+    </div>
+    <div class="reveal">
+      <div class="stat-val">R$0</div>
+      <div class="stat-label">Multas por atraso</div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div style="max-width:1200px;margin:0 auto;">
+    <p class="section-label reveal">O que fazemos</p>
+    <h2 class="section-title reveal">Serviços completos<br/>para o seu negócio</h2>
+    <p class="section-desc reveal">Do MEI à grande empresa, cobrimos todas as obrigações fiscais, contábeis e trabalhistas com precisão e agilidade.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-icon">📊</div>
+      <h3>Contabilidade Geral</h3>
+      <p>Escrituração contábil completa, balanços patrimoniais, DRE e demonstrativos financeiros conforme as normas vigentes.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">🧾</div>
+      <h3>Abertura de Empresa</h3>
+      <p>Constituição de MEI, Simples Nacional, Lucro Presumido e Lucro Real. Orientamos o melhor regime para o seu perfil.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">📋</div>
+      <h3>Departamento Fiscal</h3>
+      <p>Apuração de impostos federais, estaduais e municipais. SPED, NF-e, EFD-Contribuições e todas as obrigações acessórias.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">👥</div>
+      <h3>Departamento Pessoal</h3>
+      <p>Folha de pagamento, FGTS, eSocial, admissões, demissões e toda a gestão de recursos humanos da sua empresa.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">📈</div>
+      <h3>Planejamento Tributário</h3>
+      <p>Análise e estratégia para redução legal da carga tributária. Escolha inteligente do regime e benefícios fiscais.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">🏦</div>
+      <h3>Consultoria Financeira</h3>
+      <p>Fluxo de caixa, indicadores de desempenho e apoio na tomada de decisões estratégicas para crescer com segurança.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="why-inner">
+    <div>
+      <p class="section-label reveal">Por que a ContFran</p>
+      <h2 class="section-title reveal">Mais que números —<br/>parceiros de crescimento</h2>
+      <p class="section-desc reveal">Combinamos expertise técnica com atendimento humano. Seu sucesso é o nosso compromisso.</p>
+      <div class="why-list">
+        <div class="why-item reveal">
+          <div class="why-num">01</div>
+          <div>
+            <h4>Tecnologia de ponta</h4>
+            <p>Sistemas integrados e automação que garantem precisão e entrega pontual de todas as obrigações.</p>
+          </div>
+        </div>
+        <div class="why-item reveal">
+          <div class="why-num">02</div>
+          <div>
+            <h4>Atendimento personalizado</h4>
+            <p>Cada cliente tem um contador dedicado. Suporte ágil por WhatsApp, e-mail ou presencial.</p>
+          </div>
+        </div>
+        <div class="why-item reveal">
+          <div class="why-num">03</div>
+          <div>
+            <h4>Segurança e conformidade</h4>
+            <p>Processos auditados e atualizados diariamente com as mudanças da legislação fiscal e trabalhista.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="why-visual reveal">
+      <div class="dashboard-card">
+        <div class="db-header">
+          <span class="db-title">Resultado do Mês</span>
+          <span class="db-badge">▲ +18%</span>
+        </div>
+        <div class="db-bars">
+          <div class="db-bar" style="height:45%"></div>
+          <div class="db-bar" style="height:60%"></div>
+          <div class="db-bar" style="height:50%"></div>
+          <div class="db-bar" style="height:80%"></div>
+          <div class="db-bar" style="height:70%"></div>
+          <div class="db-bar" style="height:100%"></div>
+        </div>
+        <div class="db-kpis">
+          <div class="kpi">
+            <div class="kpi-val">R$0</div>
+            <div class="kpi-label">Multas acumuladas</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">100%</div>
+            <div class="kpi-label">Entregas no prazo</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">-23%</div>
+            <div class="kpi-label">Redução tributária</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">24h</div>
+            <div class="kpi-label">Tempo de resposta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO CONTABIL -->
+<section id="info">
+  <div style="max-width:1200px;margin:0 auto;">
+    <p class="section-label reveal">Informações Úteis</p>
+    <h2 class="section-title reveal">Calendário fiscal<br/>e obrigações 2025</h2>
+    <p class="section-desc reveal">Fique por dentro das principais datas e obrigações do ano fiscal.</p>
+
+    <div class="info-tabs reveal" style="margin-top:32px;">
+      <button class="tab-btn active" onclick="showTab('federal')">Federal</button>
+      <button class="tab-btn" onclick="showTab('estadual')">Estadual</button>
+      <button class="tab-btn" onclick="showTab('trabalhista')">Trabalhista</button>
+      <button class="tab-btn" onclick="showTab('simples')">Simples Nacional</button>
+    </div>
+
+    <div id="tab-federal" class="info-grid">
+      <div class="info-card reveal">
+        <h4><span>📅</span>IRPJ / CSLL</h4>
+        <p>Recolhimento trimestral para empresas do Lucro Presumido. Vencimentos em março, junho, setembro e dezembro.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>📄</span>SPED Contábil (ECD)</h4>
+        <p>Entrega anual obrigatória para empresas tributadas pelo Lucro Real. Prazo: último dia útil de junho.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>💰</span>IRPF — Imposto de Renda PF</h4>
+        <div class="info-val">Até 30/mai</div>
+        <p>Obrigatório para quem recebeu mais de R$33.888,00 em 2024 ou teve outras condições de obrigatoriedade.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>🏛️</span>ECF — Escrituração Contábil Fiscal</h4>
+        <p>Substituiu a DIPJ. Entregue anualmente até o último dia útil de julho para contribuintes do IRPJ.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>📊</span>EFD-Contribuições</h4>
+        <p>Escrituração de PIS/COFINS. Entrega mensal obrigatória para empresas não optantes do Simples Nacional.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>🔢</span>DCTF Mensal</h4>
+        <p>Declaração de Débitos e Créditos Tributários Federais. Entrega até o 15º dia útil do 2º mês subsequente.</p>
+      </div>
+    </div>
+
+    <div id="tab-estadual" class="info-grid" style="display:none;">
+      <div class="info-card reveal">
+        <h4><span>🏪</span>SPED Fiscal (EFD ICMS/IPI)</h4>
+        <p>Escrituração de ICMS e IPI. Entrega mensal obrigatória para contribuintes do ICMS.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>📋</span>GIA / SINTEGRA</h4>
+        <p>Guia de Informação e Apuração do ICMS. Prazo e periodicidade variam conforme cada Estado.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>🧾</span>Nota Fiscal Eletrônica</h4>
+        <p>Emissão obrigatória de NF-e para operações de circulação de mercadorias. Gerenciamento de XML e DANFE.</p>
+      </div>
+    </div>
+
+    <div id="tab-trabalhista" class="info-grid" style="display:none;">
+      <div class="info-card reveal">
+        <h4><span>💼</span>eSocial</h4>
+        <p>Sistema unificado de informações trabalhistas, previdenciárias e fiscais. Obrigatório para todos os empregadores.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>🗓️</span>FGTS — Recolhimento</h4>
+        <p>Depósito mensal obrigatório até o dia 7 de cada mês. Percentual de 8% sobre a remuneração do trabalhador.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>📑</span>RAIS / CAGED</h4>
+        <p>RAIS anual até março. CAGED mensal nos primeiros 7 dias úteis para admissões e desligamentos.</p>
+      </div>
+    </div>
+
+    <div id="tab-simples" class="info-grid" style="display:none;">
+      <div class="info-card reveal">
+        <h4><span>✅</span>DAS — Pagamento Mensal</h4>
+        <div class="info-val">Dia 20</div>
+        <p>O Documento de Arrecadação do Simples Nacional vence todo dia 20 do mês subsequente ao período de apuração.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>📊</span>DEFIS Anual</h4>
+        <p>Declaração de Informações Socioeconômicas e Fiscais. Entrega anual até 31 de março para empresas do Simples.</p>
+      </div>
+      <div class="info-card reveal">
+        <h4><span>🔄</span>Opção pelo Simples</h4>
+        <p>Adesão pode ser realizada somente em janeiro de cada ano. Fique atento ao prazo para mudar seu regime tributário.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div style="max-width:1200px;margin:0 auto;">
+    <p class="section-label reveal">Depoimentos</p>
+    <h2 class="section-title reveal">O que nossos clientes dizem</h2>
+  </div>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-text">A ContFran transformou minha visão sobre contabilidade. Antes, só apareciam com boletos. Hoje recebo relatórios claros e consultoria estratégica de verdade.</p>
+      <div class="test-author">
+        <div class="test-avatar">MR</div>
+        <div>
+          <div class="test-name">Marcos Ribeiro</div>
+          <div class="test-role">CEO — Ribeiro Soluções</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-text">Abri minha empresa com a ContFran e foi tudo muito simples e rápido. Eles cuidam de tudo, desde o CNPJ até o planejamento tributário. Recomendo muito!</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:var(--teal);">AC</div>
+        <div>
+          <div class="test-name">Ana Carvalho</div>
+          <div class="test-role">Fundadora — Studio AC Design</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-text">Profissionais extremamente competentes e atualizados. Economizamos mais de 20% em tributos com o planejamento tributário que eles desenvolveram para nós.</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:#8b5cf6;">JP</div>
+        <div>
+          <div class="test-name">João Pedro Lima</div>
+          <div class="test-role">Diretor Financeiro — GranitoMax</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2>Pronto para impulsionar<br/>o seu negócio?</h2>
+  <p>Fale com um especialista e descubra como a ContFran pode transformar a contabilidade da sua empresa.</p>
+  <a href="https://wa.me/55" class="btn-white">
+    💬 Falar com especialista
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo-text">Cont<span>Fran</span></div>
+      <p>Escritório de contabilidade moderno, especializado em soluções que geram resultados reais para empresas em crescimento.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Serviços</h5>
+      <a href="#">Abertura de Empresa</a>
+      <a href="#">Contabilidade</a>
+      <a href="#">Departamento Fiscal</a>
+      <a href="#">Depto. Pessoal</a>
+      <a href="#">Consultoria</a>
+    </div>
+    <div class="footer-col">
+      <h5>Empresa</h5>
+      <a href="#">Sobre nós</a>
+      <a href="#">Nossa equipe</a>
+      <a href="#">Blog</a>
+      <a href="#">Trabalhe conosco</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contato</h5>
+      <a href="#">📞 (21) 99999-0000</a>
+      <a href="#">✉️ contato@contfran.com.br</a>
+      <a href="#">📍 Nova Iguaçu — RJ</a>
+      <a href="#">💬 WhatsApp</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ContFran. Todos os direitos reservados.</span>
+    <span>CRC/RJ · <a href="#">Política de Privacidade</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll shadow
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Tabs
+  function showTab(tab) {
+    ['federal','estadual','trabalhista','simples'].forEach(t => {
+      document.getElementById('tab-'+t).style.display = t===tab ? 'grid' : 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach((btn,i) => {
+      btn.classList.toggle('active', btn.getAttribute('onclick').includes(tab));
+    });
+  }
+</script>
+</body>
+</html>
